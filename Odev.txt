@@ -1,0 +1,216 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+FILE *fptr;
+struct Ogrenci
+{
+    int ogrenciNumarasi;
+    char Ad[30];
+    char Soyad[30];
+    float VizeNot;
+    float finalNot;
+    struct Ogrenci *next;
+    
+}* head;
+
+
+
+void dosyayayazma(struct Ogrenci *head){
+	
+
+	fptr=fopen("ogrenci.txt","w");
+	if(fptr==NULL){
+		printf("dosya yok !");
+		exit (0);
+	}
+	for(struct Ogrenci *temp=head;temp!=NULL;temp=temp->next){
+		fprintf(fptr,"\nAdi:%s\nSoyadi:%s\nNumarasi:%d\nVize Notu:%.1f\nFinal Notu:%.1f\n",temp->Ad,temp->Soyad,temp->ogrenciNumarasi,temp->VizeNot,temp->finalNot);
+	}
+}
+
+void yazici(struct Ogrenci *i){
+	printf("\n%s ",i->Ad);
+	printf("\n%s",i->Soyad);
+	printf("\n%d",i->ogrenciNumarasi);
+	printf("\n%.1f",i->VizeNot);
+	printf("\n%.1f\n",i->finalNot);
+	i=i->next;
+}
+
+
+
+void ekleme(int ogrenciNumarasi, char* Ad, char* Soyad, float VizeNot, float finalNot)
+{
+    
+    struct Ogrenci * ogrenci = (struct Ogrenci *) malloc(sizeof(struct Ogrenci));
+    ogrenci->ogrenciNumarasi = ogrenciNumarasi;
+    strcpy(ogrenci->Ad, Ad);
+    strcpy(ogrenci->Soyad, Soyad);
+    ogrenci->VizeNot = VizeNot;
+        ogrenci->finalNot = finalNot;
+
+    ogrenci->next = NULL;
+    
+    if(head==NULL){
+        
+        head = ogrenci;
+    }
+    else{
+        
+        ogrenci->next = head;
+        head = ogrenci;
+    }
+    
+}
+void bulma(int ogrenciNumarasi)
+{
+    struct Ogrenci * temp = head;
+    while(temp!=NULL){
+        if(temp->ogrenciNumarasi==ogrenciNumarasi){
+            printf("Ogrenci Numarasi: %d\n", temp->ogrenciNumarasi);
+            printf("Ad: %s\n", temp->Ad);
+            printf("Soyad: %s\n", temp->Soyad);
+            printf("Vize notu: %0.4f\n", temp->VizeNot);
+            printf("Final notu: %0.4f\n", temp->finalNot);
+            return;
+        }
+        temp = temp->next;
+    }
+    printf("%d Numarasina sahip bir ogrenci bulunmamaktadir !!!\n", ogrenciNumarasi);
+}
+void guncelleme(int ogrenciNumarasi)
+{
+    
+    struct Ogrenci * temp = head;
+    while(temp!=NULL){
+        
+        if(temp->ogrenciNumarasi==ogrenciNumarasi){
+            printf("%d Numarali ogrenci bulunmustur \n", ogrenciNumarasi);
+            printf("Ogrencinin yeni adi: ");
+            scanf("%s", temp->Ad);
+            printf("Ogrencinin yeni soyadi: ");
+            scanf("%s", temp->Soyad);
+            printf("Yeni vize notu: ");
+            scanf("%f",&temp->VizeNot);
+             printf("Yeni final notu: ");
+            scanf("%f",&temp->finalNot);
+            printf("Guncelleme islemi gerceklestirilmistir\n");
+            return;
+        }
+        temp = temp->next;
+        
+    }
+    printf("%d Numarasina sahip bir ogrenci bulunmamaktadir !!!\n", ogrenciNumarasi);
+    
+}
+void silme(int ogrenciNumarasi)
+{
+    struct Ogrenci * temp1 = head;
+    struct Ogrenci * temp2 = head; 
+    while(temp1!=NULL){
+        
+        if(temp1->ogrenciNumarasi==ogrenciNumarasi){
+            
+            printf(" %d Numarali ogrenci bulunmustur \n", ogrenciNumarasi);
+            
+            if(temp1==temp2){
+                
+                head = head->next;
+                free(temp1);
+            }
+            else{
+                
+                temp2->next = temp1->next;
+                free(temp1); 
+            }
+            
+            printf("Silme isleminiz gercekleştirilmistir !!!\n");
+            return;
+            
+        }
+        temp2 = temp1;
+        temp1 = temp1->next;
+        
+    }
+    printf(" %d Numarasina sahip bir ogrenci bulunmamaktadir !!!\n", ogrenciNumarasi);
+    
+}
+void listeleme()
+{
+    struct Ogrenci * temp = head;
+    while(temp!=NULL){
+        
+        printf("Ogrenci numarasi: %d\n", temp->ogrenciNumarasi);
+        printf("Adi: %s\n", temp->Ad);
+        printf("Soyadi: %s\n", temp->Soyad);
+        printf("Vize notu: %0.4f\n\n", temp->VizeNot);
+        printf("Final notu: %0.4f\n\n", temp->finalNot);
+        temp = temp->next;
+        
+    }
+}
+int main()
+{
+    head = NULL;
+    int option;
+    char Ad[30];
+    char Soyad[30];
+    int ogrenciNumarasi;
+    float VizeNot;
+    float finalNot;
+    printf("1: Ogrenci bilgileri eklemek\n2: Ogrenci bilgileri bulmak\n3: Ogrenci bilgileri silmek\n4: Ogrenci bilgileri guncellemek\n5: Ogrenci Listesi gormek \n6: Dosyadan okuma  ");
+    do
+    {
+        printf("\n\nMenuden yapmak istediginiz islemi giriniz: ");
+        scanf("%d", &option);
+        switch (option)
+        {
+            case 1:
+                printf(" Ogrenci numarasi giriniz: ");
+                scanf("%d", &ogrenciNumarasi);
+                printf("Ogrenci adi giriniz: ");
+                scanf("%s", Ad);
+                printf("Ogrenci soyadi giriniz: ");
+                scanf("%s", Soyad);
+                printf("Vize notu giriniz: ");
+                scanf("%f", &VizeNot);
+                printf("Final notu giriniz: ");
+                scanf("%f", &finalNot);
+                ekleme(ogrenciNumarasi, Ad, Soyad, VizeNot, finalNot);
+                dosyayayazma(head);
+                break;
+            case 2:
+                printf("Bulmak istediginiz ogrencinin numarasini giriniz: ");
+                scanf("%d", &ogrenciNumarasi);
+                bulma(ogrenciNumarasi);
+                break;
+            case 3:
+                printf("Silmek istediğiniz ogreninin numarasini giriniz: ");
+                scanf("%d", &ogrenciNumarasi);
+                silme(ogrenciNumarasi);
+                break;
+            case 4:
+                printf("Guncellemek istediginiz ogrencinin numarasini giriniz: ");
+                scanf("%d", &ogrenciNumarasi);
+                guncelleme(ogrenciNumarasi);
+                break;
+            case 5:
+                listeleme();
+                break;
+            case 6:
+            	fptr=fopen("ogrenci.txt","r");
+				if(fptr==NULL){
+				printf("dosya yok !");
+				exit (0);
+				}
+				
+				printf("Ogrenci listesi asagidaki gibidir. \n");
+				while(!feof(fptr)){
+				fread(&head,sizeof(struct Ogrenci),1,fptr);
+				yazici(head);
+				}
+            	break;
+        }
+        
+    } while (option != 0);
+}
